@@ -1,0 +1,14 @@
+[Desktop Entry]
+Name=NeoMutt
+Comment=The NeoMutt Mail User Agent
+Comment[es]=Cliente de Correo Electrónico
+Comment[pl]=Program pocztowy neomutt
+Comment[pt]=Cliente de Correio Eletrônico
+Comment[pt_BR]=Cliente de Correio Eletrônico
+Comment[sv]=E-postläsare
+Icon=neomutt
+Exec=neomutt
+Terminal=true
+Type=Application
+Categories=ConsoleOnly;Network;Email;
+# vi: encoding=utf-8
