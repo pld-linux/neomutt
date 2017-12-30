@@ -152,7 +152,7 @@ install contrib/logo/neomutt-64.png $RPM_BUILD_ROOT%{_pixmapsdir}/neomutt.png
 
 install %{SOURCE1} $RPM_BUILD_ROOT%{_desktopdir}
 
-cat <<'EOF' >$RPM_BUILD_ROOT%{_bindir}/mutt_source-muttrc.d
+cat <<'EOF' >$RPM_BUILD_ROOT%{_bindir}/neomutt_source-neomuttrc.d
 #!/bin/sh -e
 for rc in %{_sysconfdir}/NeoMuttrc.d/*.rc; do
 	[ ! -r "$rc" ] || echo "source \"$rc\""
@@ -174,7 +174,7 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace,missingok) %verify(not md5 mtime size) %{_sysconfdir}/neomuttrc
 %config(noreplace,missingok) %verify(not md5 mtime size) %{_sysconfdir}/NeoMuttrc.d/*.rc
 %attr(755,root,root) %{_bindir}/neomutt
-%attr(755,root,root) %{_bindir}/mutt_source-muttrc.d
+%attr(755,root,root) %{_bindir}/neomutt_source-neomuttrc.d
 %dir %{_libexecdir}/%{name}
 %attr(755,root,root) %{_libexecdir}/%{name}/pgpewrap
 %attr(755,root,root) %{_libexecdir}/%{name}/pgpring
