@@ -19,12 +19,12 @@ Summary(ru.UTF-8):	Почтовая клиентская программа NeoM
 Summary(tr.UTF-8):	NeoMutt elektronik posta programı
 Summary(uk.UTF-8):	Поштова клієнтська програма NeoMutt
 Name:		neomutt
-Version:	20180512
+Version:	20180622
 Release:	1
 License:	GPL v2+
 Group:		Applications/Mail
 Source0:	https://github.com/neomutt/neomutt/archive/%{name}-%{version}.tar.gz
-# Source0-md5:	17634a50c11acbbe7f377ea8c3392419
+# Source0-md5:	e8d96f702d403f3666c983df001f15eb
 Source1:	%{name}.desktop
 URL:		http://www.mutt.org/
 BuildRequires:	autoconf >= 2.54
@@ -177,7 +177,6 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/neomutt_source-neomuttrc.d
 %dir %{_libexecdir}/%{name}
 %attr(755,root,root) %{_libexecdir}/%{name}/pgpewrap
-%attr(755,root,root) %{_libexecdir}/%{name}/pgpring
 %attr(755,root,root) %{_libexecdir}/%{name}/smime_keys
 
 %{_docdir}/%{name}
@@ -185,7 +184,6 @@ rm -rf $RPM_BUILD_ROOT
 %{_pixmapsdir}/neomutt.png
 %{_mandir}/man1/neomutt.1*
 %{_mandir}/man1/pgpewrap_neomutt.1*
-%{_mandir}/man1/pgpring_neomutt.1*
 %{_mandir}/man1/smime_keys_neomutt.1*
 %{_mandir}/man5/mbox_neomutt.5*
 %{_mandir}/man5/mmdf_neomutt.5*
