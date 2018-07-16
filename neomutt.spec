@@ -19,12 +19,12 @@ Summary(ru.UTF-8):	Почтовая клиентская программа NeoM
 Summary(tr.UTF-8):	NeoMutt elektronik posta programı
 Summary(uk.UTF-8):	Поштова клієнтська програма NeoMutt
 Name:		neomutt
-Version:	20180622
+Version:	20180716
 Release:	1
 License:	GPL v2+
 Group:		Applications/Mail
 Source0:	https://github.com/neomutt/neomutt/archive/%{name}-%{version}.tar.gz
-# Source0-md5:	e8d96f702d403f3666c983df001f15eb
+# Source0-md5:	f628d1bcb31d36c926ed60f2105f742a
 Source1:	%{name}.desktop
 URL:		http://www.mutt.org/
 BuildRequires:	autoconf >= 2.54
