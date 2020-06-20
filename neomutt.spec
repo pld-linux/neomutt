@@ -4,6 +4,7 @@
 %bcond_with	gdbm		# use GDBM instead of BerkeleyDB
 %bcond_with	qdbm		# use QDBM instead of BerkeleyDB
 %bcond_with	tokyocabinet	# use TokyoCabinet instead of BerkeleyDB
+%bcond_without	lmdb		# LMDB header cache backend
 #
 %if %{without gdbm} && %{without qdbm} && %{without tokyocabinet}
 %define	with_bdb	1
@@ -38,6 +39,7 @@ BuildRequires:	gettext-tools
 BuildRequires:	gpgme-devel >= 1:1.1.1
 BuildRequires:	libidn-devel
 BuildRequires:	libxslt-progs
+%{?with_lmdb:BuildRequires:	lmdb-devel}
 BuildRequires:	lynx
 BuildRequires:	lz4-devel
 %{!?with_slang:BuildRequires:	ncurses-devel >= 5.0}
@@ -129,6 +131,7 @@ NeoMutt - це невеликий, але потужний повноекран�
 	%{?with_bdb:--bdb --with-bdb=/usr} \
 	%{!?with_slang:--with-ui=ncurses} \
 	%{?with_gdbm:--gdbm} \
+	%{?with_lmdb:--lmdb} \
 	--lz4 \
 	--with-mailpath=/var/mail \
 	--mixmaster \
