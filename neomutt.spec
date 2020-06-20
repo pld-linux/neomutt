@@ -39,11 +39,14 @@ BuildRequires:	gpgme-devel >= 1:1.1.1
 BuildRequires:	libidn-devel
 BuildRequires:	libxslt-progs
 BuildRequires:	lynx
+BuildRequires:	lz4-devel
 %{!?with_slang:BuildRequires:	ncurses-devel >= 5.0}
 BuildRequires:	openssl-devel >= 0.9.7d
 %{?with_qdbm:BuildRequires:	qdbm-devel}
 %{?with_slang:BuildRequires:	slang-devel}
 %{?with_tokyocabinet:BuildRequires:	tokyocabinet-devel}
+BuildRequires:	zlib-devel
+BuildRequires:	zstd-devel
 Requires:	iconv
 Suggests:	mailcap
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
@@ -126,13 +129,16 @@ NeoMutt - це невеликий, але потужний повноекран�
 	%{?with_bdb:--bdb --with-bdb=/usr} \
 	%{!?with_slang:--with-ui=ncurses} \
 	%{?with_gdbm:--gdbm} \
+	--lz4 \
 	--with-mailpath=/var/mail \
 	--mixmaster \
 	%{?with_qdbm:--qdbm} \
 	%{?with_sasl:--sasl} \
 	%{?with_slang:--with-ui=slang} \
 	--ssl \
-	%{?with_tokyocabinet:--tokyocabinet}
+	%{?with_tokyocabinet:--tokyocabinet} \
+	--zlib \
+	--zstd
 
 %{__make}
 
