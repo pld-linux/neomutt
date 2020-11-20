@@ -20,12 +20,12 @@ Summary(ru.UTF-8):	Почтовая клиентская программа NeoM
 Summary(tr.UTF-8):	NeoMutt elektronik posta programı
 Summary(uk.UTF-8):	Поштова клієнтська програма NeoMutt
 Name:		neomutt
-Version:	20200925
+Version:	20201120
 Release:	1
 License:	GPL v2+
 Group:		Applications/Mail
 Source0:	https://github.com/neomutt/neomutt/archive/%{version}.tar.gz
-# Source0-md5:	9123ea811c8c0b292669d088b3018b9e
+# Source0-md5:	d2b710189f18d942836139c216036bc4
 Source1:	%{name}.desktop
 URL:		http://www.mutt.org/
 BuildRequires:	autoconf >= 2.54
@@ -154,9 +154,9 @@ install -d $RPM_BUILD_ROOT{%{_desktopdir},%{_pixmapsdir},%{_mandir}/pl/man1} \
 	DESTDIR=$RPM_BUILD_ROOT \
 	DOTLOCK_GROUP=
 
-install contrib/gpg.rc $RPM_BUILD_ROOT%{_sysconfdir}/NeoMuttrc.d
-install contrib/smime.rc $RPM_BUILD_ROOT%{_sysconfdir}/NeoMuttrc.d
-install contrib/colors.linux $RPM_BUILD_ROOT%{_sysconfdir}/NeoMuttrc.d/colors.rc
+install contrib/samples/gpg.rc $RPM_BUILD_ROOT%{_sysconfdir}/NeoMuttrc.d
+install contrib/samples/smime.rc $RPM_BUILD_ROOT%{_sysconfdir}/NeoMuttrc.d
+install contrib/samples/colors.linux $RPM_BUILD_ROOT%{_sysconfdir}/NeoMuttrc.d/colors.rc
 install contrib/logo/neomutt-64.png $RPM_BUILD_ROOT%{_pixmapsdir}/neomutt.png
 
 install %{SOURCE1} $RPM_BUILD_ROOT%{_desktopdir}
@@ -178,7 +178,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files -f neomutt.lang
 %defattr(644,root,root,755)
-%doc contrib/{*rc*,*cap*} ChangeLog.md README.md
+%doc contrib/samples/{*rc*,*cap*} ChangeLog.md README.md
 %dir %{_sysconfdir}/NeoMuttrc.d
 %config(noreplace,missingok) %verify(not md5 mtime size) %{_sysconfdir}/neomuttrc
 %config(noreplace,missingok) %verify(not md5 mtime size) %{_sysconfdir}/NeoMuttrc.d/*.rc
