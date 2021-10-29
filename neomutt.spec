@@ -1,5 +1,4 @@
 # Conditional build:
-%bcond_with	slang		# use slang library instead of ncurses
 %bcond_without	sasl		# don't use sasl
 %bcond_with	gdbm		# use GDBM instead of BerkeleyDB
 %bcond_with	qdbm		# use QDBM instead of BerkeleyDB
@@ -20,12 +19,12 @@ Summary(ru.UTF-8):	Почтовая клиентская программа NeoM
 Summary(tr.UTF-8):	NeoMutt elektronik posta programı
 Summary(uk.UTF-8):	Поштова клієнтська програма NeoMutt
 Name:		neomutt
-Version:	20211022
+Version:	20211029
 Release:	1
 License:	GPL v2+
 Group:		Applications/Mail
 Source0:	https://github.com/neomutt/neomutt/archive/%{version}.tar.gz
-# Source0-md5:	d3d508be2b8f16fdc710111c9af44671
+# Source0-md5:	fd9a5676a334ad2c9db1d7f39ba985e9
 Source1:	%{name}.desktop
 URL:		http://www.mutt.org/
 BuildRequires:	autoconf >= 2.54
@@ -42,10 +41,9 @@ BuildRequires:	libxslt-progs
 %{?with_lmdb:BuildRequires:	lmdb-devel}
 BuildRequires:	lynx
 BuildRequires:	lz4-devel
-%{!?with_slang:BuildRequires:	ncurses-devel >= 5.0}
+BuildRequires:	ncurses-devel >= 5.0
 BuildRequires:	openssl-devel >= 0.9.7d
 %{?with_qdbm:BuildRequires:	qdbm-devel}
-%{?with_slang:BuildRequires:	slang-devel}
 %{?with_tokyocabinet:BuildRequires:	tokyocabinet-devel}
 BuildRequires:	zlib-devel
 BuildRequires:	zstd-devel
@@ -129,7 +127,6 @@ NeoMutt - це невеликий, але потужний повноекран�
 	%{!?debug:--disable-debug} %{?debug:--enable-debug} \
 	--gpgme \
 	%{?with_bdb:--bdb --with-bdb=/usr} \
-	%{!?with_slang:--with-ui=ncurses} \
 	%{?with_gdbm:--gdbm} \
 	%{?with_lmdb:--lmdb} \
 	--lz4 \
@@ -137,7 +134,6 @@ NeoMutt - це невеликий, але потужний повноекран�
 	--mixmaster \
 	%{?with_qdbm:--qdbm} \
 	%{?with_sasl:--sasl} \
-	%{?with_slang:--with-ui=slang} \
 	--ssl \
 	%{?with_tokyocabinet:--tokyocabinet} \
 	--zlib \
