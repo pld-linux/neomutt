@@ -32,7 +32,7 @@ BuildRequires:	automake >= 1.6
 %{?with_sasl:BuildRequires:	cyrus-sasl-devel >= 2.1.0}
 %{?with_bdb:BuildRequires:	db-devel >= 4.0}
 BuildRequires:	docbook-dtd42-xml
-BuildRequires:	docbook-style-xsl
+BuildRequires:	docbook-style-xsl-nons
 %{?with_gdbm:BuildRequires:	gdbm-devel}
 BuildRequires:	gettext-tools
 BuildRequires:	gpgme-devel >= 1:1.1.1
@@ -44,6 +44,7 @@ BuildRequires:	lz4-devel
 BuildRequires:	ncurses-devel >= 5.0
 BuildRequires:	openssl-devel >= 0.9.7d
 %{?with_qdbm:BuildRequires:	qdbm-devel}
+BuildRequires:	tcl
 %{?with_tokyocabinet:BuildRequires:	tokyocabinet-devel}
 BuildRequires:	zlib-devel
 BuildRequires:	zstd-devel
