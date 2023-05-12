@@ -19,12 +19,12 @@ Summary(ru.UTF-8):	Почтовая клиентская программа NeoM
 Summary(tr.UTF-8):	NeoMutt elektronik posta programı
 Summary(uk.UTF-8):	Поштова клієнтська програма NeoMutt
 Name:		neomutt
-Version:	20220429
+Version:	20230512
 Release:	1
 License:	GPL v2+
 Group:		Applications/Mail
 Source0:	https://github.com/neomutt/neomutt/archive/%{version}.tar.gz
-# Source0-md5:	1233999eac07995bc42d583896670685
+# Source0-md5:	3e2b220a1f90c5a9965fd54bef643ddf
 Source1:	%{name}.desktop
 URL:		http://www.mutt.org/
 BuildRequires:	autoconf >= 2.54
@@ -44,12 +44,16 @@ BuildRequires:	lz4-devel
 BuildRequires:	ncurses-devel >= 5.0
 BuildRequires:	openssl-devel >= 0.9.7d
 %{?with_qdbm:BuildRequires:	qdbm-devel}
+BuildRequires:	rpm-build >= 4.6
 BuildRequires:	tcl
 %{?with_tokyocabinet:BuildRequires:	tokyocabinet-devel}
 BuildRequires:	zlib-devel
 BuildRequires:	zstd-devel
 Requires:	iconv
 Suggests:	mailcap
+Suggests:	%{name}-gpg-json
+Suggests:	%{name}-oauth2
+Suggests:	%{name}-smime-keys
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		specflags_ia32	-fomit-frame-pointer
@@ -109,8 +113,34 @@ NeoMutt - це невеликий, але потужний повноекран�
 сортування повідомлень у ланцюжках. Містить також (поки що
 експериментальну) підтримку NNTP.
 
+%package gpg-json
+Summary:	GPG-based JSON database for neomutt
+Requires:	gnupg
+Requires:	jq
+BuildArch:	noarch
+
+%description gpg-json
+GPG-based JSON database for neomutt.
+
+%package oauth2
+Summary:	Helper script for managing OAuth2 access tokens
+Requires:	python3-modules
+BuildArch:	noarch
+
+%description oauth2
+Helper script for managing OAuth2 access tokens.
+
+%package smime-keys
+Summary:	Utility to add S/MIME certificate to the database used by neomutt
+BuildArch:	noarch
+
+%description smime-keys
+Utility to add S/MIME certificate to the database used by neomutt.
+
 %prep
 %setup -q
+
+%{__sed} -i -e '1 s,#!.*env python3,#!%{__python3},' contrib/oauth2/mutt_oauth2.py
 
 %build
 ./configure \
@@ -151,19 +181,19 @@ install -d $RPM_BUILD_ROOT{%{_desktopdir},%{_pixmapsdir},%{_mandir}/pl/man1} \
 	DESTDIR=$RPM_BUILD_ROOT \
 	DOTLOCK_GROUP=
 
-install contrib/samples/gpg.rc $RPM_BUILD_ROOT%{_sysconfdir}/NeoMuttrc.d
-install contrib/samples/smime.rc $RPM_BUILD_ROOT%{_sysconfdir}/NeoMuttrc.d
-install contrib/samples/colors.linux $RPM_BUILD_ROOT%{_sysconfdir}/NeoMuttrc.d/colors.rc
-install contrib/logo/neomutt-64.png $RPM_BUILD_ROOT%{_pixmapsdir}/neomutt.png
+install data/logo/neomutt-256.png $RPM_BUILD_ROOT%{_pixmapsdir}/neomutt.png
 
 install %{SOURCE1} $RPM_BUILD_ROOT%{_desktopdir}
 
 cat <<'EOF' >$RPM_BUILD_ROOT%{_bindir}/neomutt_source-neomuttrc.d
 #!/bin/sh -e
-for rc in %{_sysconfdir}/NeoMuttrc.d/*.rc; do
+for rc in `find '%{_sysconfdir}/NeoMuttrc.d' -name '*.rc'`; do
 	[ ! -r "$rc" ] || echo "source \"$rc\""
 done
 EOF
+
+%{__rm} -r $RPM_BUILD_ROOT%{_datadir}/neomutt/account-command/macos-keychain
+%{__rm} -r $RPM_BUILD_ROOT%{_datadir}/neomutt/logo
 
 # keep manual.txt.gz, the rest is installed as %doc
 %{__rm} -r $RPM_BUILD_ROOT%{_docdir}/%{name}/[!m]*
@@ -177,22 +207,43 @@ rm -rf $RPM_BUILD_ROOT
 
 %files -f neomutt.lang
 %defattr(644,root,root,755)
-%doc contrib/samples/{*rc*,*cap*} ChangeLog.md README.md
+%doc ChangeLog.md README.md
 %dir %{_sysconfdir}/NeoMuttrc.d
 %config(noreplace,missingok) %verify(not md5 mtime size) %{_sysconfdir}/neomuttrc
-%config(noreplace,missingok) %verify(not md5 mtime size) %{_sysconfdir}/NeoMuttrc.d/*.rc
 %attr(755,root,root) %{_bindir}/neomutt
 %attr(755,root,root) %{_bindir}/neomutt_source-neomuttrc.d
 %dir %{_libexecdir}/%{name}
 %attr(755,root,root) %{_libexecdir}/%{name}/pgpewrap
-%attr(755,root,root) %{_libexecdir}/%{name}/smime_keys
 
+%dir %{_datadir}/neomutt
+%dir %{_datadir}/neomutt/account-command
+%dir %{_datadir}/neomutt/colorschemes
+%{_datadir}/neomutt/colorschemes/*.neomuttrc
+%{_datadir}/neomutt/mime.types
+%dir %{_datadir}/neomutt/vim-keys
+%{_datadir}/neomutt/vim-keys/vim-keys.rc
 %{_docdir}/%{name}
 %{_desktopdir}/neomutt.desktop
 %{_pixmapsdir}/neomutt.png
 %{_mandir}/man1/neomutt.1*
 %{_mandir}/man1/pgpewrap_neomutt.1*
-%{_mandir}/man1/smime_keys_neomutt.1*
 %{_mandir}/man5/mbox_neomutt.5*
 %{_mandir}/man5/mmdf_neomutt.5*
 %{_mandir}/man5/neomuttrc.5*
+
+%files gpg-json
+%defattr(644,root,root,755)
+%doc data/account-command/gpg-json/README.md
+%dir %{_datadir}/neomutt/account-command/gpg-json
+%attr(755,root,root) %{_datadir}/neomutt/account-command/gpg-json/credentials.sh
+
+%files oauth2
+%defattr(644,root,root,755)
+%doc contrib/oauth2/mutt_oauth2.py.README
+%dir %{_datadir}/neomutt/oauth2
+%attr(755,root,root) %{_datadir}/neomutt/oauth2/mutt_oauth2.py
+
+%files smime-keys
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_libexecdir}/%{name}/smime_keys
+%{_mandir}/man1/smime_keys_neomutt.1*
