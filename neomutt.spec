@@ -51,9 +51,9 @@ BuildRequires:	zlib-devel
 BuildRequires:	zstd-devel
 Requires:	iconv
 Suggests:	mailcap
-Suggests:	%{name}-gpg-json
-Suggests:	%{name}-oauth2
-Suggests:	%{name}-smime-keys
+Suggests:	%{name}-gpg-json = %{version}-%{release}
+Suggests:	%{name}-oauth2 = %{version}-%{release}
+Suggests:	%{name}-smime-keys = %{version}-%{release}
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		specflags_ia32	-fomit-frame-pointer
@@ -115,6 +115,7 @@ NeoMutt - це невеликий, але потужний повноекран�
 
 %package gpg-json
 Summary:	GPG-based JSON database for neomutt
+Requires:	%{name} = %{version}-%{release}
 Requires:	gnupg
 Requires:	jq
 BuildArch:	noarch
@@ -124,6 +125,7 @@ GPG-based JSON database for neomutt.
 
 %package oauth2
 Summary:	Helper script for managing OAuth2 access tokens
+Requires:	%{name} = %{version}-%{release}
 Requires:	python3-modules
 BuildArch:	noarch
 
@@ -132,6 +134,7 @@ Helper script for managing OAuth2 access tokens.
 
 %package smime-keys
 Summary:	Utility to add S/MIME certificate to the database used by neomutt
+Requires:	%{name} = %{version}-%{release}
 BuildArch:	noarch
 
 %description smime-keys
