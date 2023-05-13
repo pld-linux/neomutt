@@ -4,6 +4,8 @@
 %bcond_with	qdbm		# use QDBM instead of BerkeleyDB
 %bcond_with	tokyocabinet	# use TokyoCabinet instead of BerkeleyDB
 %bcond_without	lmdb		# LMDB header cache backend
+%bcond_without	lua		# Lua scripting support
+%bcond_without	pcre2		# PCRE2 regular expressions
 #
 %if %{without gdbm} && %{without qdbm} && %{without tokyocabinet}
 %define	with_bdb	1
@@ -36,13 +38,16 @@ BuildRequires:	docbook-style-xsl-nons
 %{?with_gdbm:BuildRequires:	gdbm-devel}
 BuildRequires:	gettext-tools
 BuildRequires:	gpgme-devel >= 1:1.1.1
-BuildRequires:	libidn-devel
+BuildRequires:	libgpg-error-devel
+BuildRequires:	libidn2-devel
 BuildRequires:	libxslt-progs
 %{?with_lmdb:BuildRequires:	lmdb-devel}
+%{?with_lua:BuildRequires:	lua-devel}
 BuildRequires:	lynx
 BuildRequires:	lz4-devel
 BuildRequires:	ncurses-devel >= 5.0
 BuildRequires:	openssl-devel >= 0.9.7d
+%{?with_pcre2:BuildRequires:	pcre2-8-devel}
 %{?with_qdbm:BuildRequires:	qdbm-devel}
 BuildRequires:	rpm-build >= 4.6
 BuildRequires:	tcl
@@ -163,9 +168,11 @@ Utility to add S/MIME certificate to the database used by neomutt.
 	%{?with_bdb:--bdb --with-bdb=/usr} \
 	%{?with_gdbm:--gdbm} \
 	%{?with_lmdb:--lmdb} \
+	%{?with_lua:--lua} \
 	--lz4 \
 	--with-mailpath=/var/mail \
 	--mixmaster \
+	%{?with_pcre2:--pcre2} \
 	%{?with_qdbm:--qdbm} \
 	%{?with_sasl:--sasl} \
 	--ssl \
