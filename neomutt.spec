@@ -22,7 +22,7 @@ Summary(tr.UTF-8):	NeoMutt elektronik posta programı
 Summary(uk.UTF-8):	Поштова клієнтська програма NeoMutt
 Name:		neomutt
 Version:	20250510
-Release:	1
+Release:	2
 License:	GPL v2+
 Group:		Applications/Mail
 Source0:	https://github.com/neomutt/neomutt/archive/%{version}.tar.gz
@@ -208,7 +208,7 @@ EOF
 # keep manual.txt.gz, the rest is installed as %doc
 %{__rm} -r $RPM_BUILD_ROOT%{_docdir}/%{name}/[!m]*
 
-mv $RPM_BUILD_ROOT%{_datadir}/locale/nb{_NO,}
+%{__mv} $RPM_BUILD_ROOT%{_datadir}/locale/nb{_NO,}
 
 %find_lang neomutt
 
