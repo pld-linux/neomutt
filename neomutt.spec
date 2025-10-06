@@ -27,6 +27,7 @@ License:	GPL v2+
 Group:		Applications/Mail
 Source0:	https://github.com/neomutt/neomutt/archive/%{version}.tar.gz
 # Source0-md5:	95aa466aad9d3305ec81b429f0950616
+Patch0:		flags.patch
 Source1:	%{name}.desktop
 URL:		http://www.mutt.org/
 BuildRequires:	autoconf >= 2.54
@@ -147,6 +148,7 @@ Utility to add S/MIME certificate to the database used by neomutt.
 
 %prep
 %setup -q
+%patch -P0 -p1
 
 %{__sed} -i -e '1 s,#!.*env python3,#!%{__python3},' contrib/oauth2/mutt_oauth2.py
 

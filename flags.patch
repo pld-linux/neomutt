@@ -1,0 +1,17 @@
+--- neomutt-20250905/auto.def.orig	2025-09-05 15:38:48.000000000 +0200
++++ neomutt-20250905/auto.def	2025-10-06 14:01:38.268913954 +0200
+@@ -1139,14 +1139,6 @@
+ }
+ 
+ ###############################################################################
+-# Debug or Release build?
+-if {[get-define debug_build]} {
+-  define-append CFLAGS -g -O0
+-} else {
+-  define-append CFLAGS -O2
+-}
+-
+-###############################################################################
+ # Generate conststrings.c
+ proc remove-paths-from-cflags {} {
+   lkill [get-define CFLAGS] {{x} {
