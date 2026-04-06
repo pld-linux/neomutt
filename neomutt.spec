@@ -21,12 +21,12 @@ Summary(ru.UTF-8):	Почтовая клиентская программа NeoM
 Summary(tr.UTF-8):	NeoMutt elektronik posta programı
 Summary(uk.UTF-8):	Поштова клієнтська програма NeoMutt
 Name:		neomutt
-Version:	20251211
+Version:	20260406
 Release:	1
 License:	GPL v2+
 Group:		Applications/Mail
 Source0:	https://github.com/neomutt/neomutt/archive/%{version}.tar.gz
-# Source0-md5:	1f582afaba694b64c45fcdc271b91411
+# Source0-md5:	61adcf590a8e7a68aa730802f426cd77
 Patch0:		flags.patch
 Source1:	%{name}.desktop
 URL:		http://www.mutt.org/
@@ -155,7 +155,7 @@ Utility to add S/MIME certificate to the database used by neomutt.
 %build
 ./configure \
 	LDFLAGS="${LDFLAGS:-%rpmldflags}" \
-	CFLAGS="${CFLAGS:-%rpmcflags}" \
+	CFLAGS="${CFLAGS:-%rpmcflags -fno-omit-frame-pointer}" \
 	CXXFLAGS="${CXXFLAGS:-%rpmcxxflags}" \
 	FFLAGS="${FFLAGS:-%rpmcflags}" \
 	FCFLAGS="${FCFLAGS:-%rpmcflags}" \
