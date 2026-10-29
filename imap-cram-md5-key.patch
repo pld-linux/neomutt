@@ -1,0 +1,32 @@
+From 20027d74f2db3bb0e2d967b51adb4a705c929037 Mon Sep 17 00:00:00 2001
+From: Richard Russon <rich@flatcap.org>
+Date: Mon, 2 Mar 2026 23:42:08 +0000
+Subject: [PATCH 03/10] imap: use memcpy for binary MD5 hash in CRAM-MD5
+ hmac_md5()
+
+mutt_str_copy() uses strlcpy internally which stops at the first NUL
+byte. An MD5 digest is 16 bytes of binary data with ~99.6% probability
+of containing at least one NUL. For passwords longer than 64 bytes,
+the MD5 hash of the password is used as the HMAC key, but the string
+copy silently truncated it at the first NUL, weakening the key.
+
+Use memcpy() to copy the full binary digest.
+
+(cherry picked from commit ddae337e84a728be432d061e253c5a1092347ca1)
+---
+ imap/auth_cram.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/imap/auth_cram.c b/imap/auth_cram.c
+index c849312..58c7853 100644
+--- a/imap/auth_cram.c
++++ b/imap/auth_cram.c
+@@ -60,7 +60,7 @@ static void hmac_md5(const char *password, const char *challenge, unsigned char
+   {
+     unsigned char hash_passwd[MD5_DIGEST_LEN];
+     mutt_md5_bytes(password, secret_len, hash_passwd);
+-    mutt_str_copy((char *) secret, (char *) hash_passwd, MD5_DIGEST_LEN);
++    memcpy(secret, hash_passwd, MD5_DIGEST_LEN);
+     secret_len = MD5_DIGEST_LEN;
+   }
+   else

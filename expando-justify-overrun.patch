@@ -1,0 +1,75 @@
+From a51ab1efb422a1253c068bb0f0033547b2e08f20 Mon Sep 17 00:00:00 2001
+From: Richard Russon <rich@flatcap.org>
+Date: Thu, 13 Aug 2026 08:44:19 +0100
+Subject: [PATCH 10/10] expando: fix buf_justify buffer overrun
+
+Avoid writing past the end of the destination buffer when
+right/center justifying by moving the terminating NUL with the
+payload and allocating exactly the required final size.
+
+Add regression coverage for empty-string padding cases that
+previously exercised the overrun path.
+
+(cherry picked from commit 550ac6cc6e4916bf8c7bc493cc80ac2cde1e8a0b)
+---
+ expando/format.c | 23 +++++++++++------------
+ 1 file changed, 11 insertions(+), 12 deletions(-)
+
+diff --git a/expando/format.c b/expando/format.c
+index 45d23f1..0978270 100644
+--- a/expando/format.c
++++ b/expando/format.c
+@@ -51,42 +51,41 @@ void buf_justify(struct Buffer *buf, enum FormatJustify justify, size_t max_cols
+   if (!buf || (pad_char == '\0'))
+     return;
+ 
+-  size_t len = buf_len(buf);
++  const size_t len = buf_len(buf);
+   if (len >= max_cols)
+     return;
+ 
+-  buf_alloc(buf, len + max_cols);
+-
+-  max_cols -= len;
++  const size_t pad = max_cols - len;
++  buf_alloc(buf, max_cols + 1);
+ 
+   switch (justify)
+   {
+     case JUSTIFY_LEFT:
+     {
+-      memset(buf->dptr, pad_char, max_cols);
++      memset(buf->dptr, pad_char, pad);
+       break;
+     }
+ 
+     case JUSTIFY_CENTER:
+     {
+-      if (max_cols > 1)
++      if (pad > 1)
+       {
+-        memmove(buf->data + (max_cols / 2), buf->data, len);
+-        memset(buf->data, pad_char, max_cols / 2);
++        memmove(buf->data + (pad / 2), buf->data, len + 1);
++        memset(buf->data, pad_char, pad / 2);
+       }
+-      memset(buf->data + len + (max_cols / 2), pad_char, (max_cols + 1) / 2);
++      memset(buf->data + len + (pad / 2), pad_char, (pad + 1) / 2);
+       break;
+     }
+ 
+     case JUSTIFY_RIGHT:
+     {
+-      memmove(buf->data + max_cols, buf->data, len);
+-      memset(buf->data, pad_char, max_cols);
++      memmove(buf->data + pad, buf->data, len + 1);
++      memset(buf->data, pad_char, pad);
+       break;
+     }
+   }
+ 
+-  buf->dptr += max_cols;
++  buf->dptr += pad;
+   buf->dptr[0] = '\0';
+ }
+ 

@@ -1,0 +1,23 @@
+From d50e464a34045e1ab84a3be92437691d3790d970 Mon Sep 17 00:00:00 2001
+From: Syed Mohammed Nayyar <jmestwa@gmail.com>
+Date: Thu, 2 Jul 2026 16:15:49 +0530
+Subject: [PATCH 09/10] date: bound tm_mon in mutt_date_make_time
+
+(cherry picked from commit 993c8b6dc7f1791f13bc4fd2c1bb83b94c76e81e)
+---
+ mutt/date.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/mutt/date.c b/mutt/date.c
+index 2d16489..eef7510 100644
+--- a/mutt/date.c
++++ b/mutt/date.c
+@@ -255,6 +255,8 @@ time_t mutt_date_make_time(struct tm *t, bool local)
+ 
+   if ((t->tm_mday < 1) || (t->tm_mday > 31))
+     return TIME_T_MIN;
++  if ((t->tm_mon < 0) || (t->tm_mon > 11))
++    return TIME_T_MIN;
+   if ((t->tm_hour < 0) || (t->tm_hour > 23) || (t->tm_min < 0) ||
+       (t->tm_min > 59) || (t->tm_sec < 0) || (t->tm_sec > 60))
+   {

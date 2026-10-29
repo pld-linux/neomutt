@@ -1,0 +1,30 @@
+From 417f3dc727d800d44ed6f2dc46c5c80543531324 Mon Sep 17 00:00:00 2001
+From: Syed Mohammed Nayyar <jmestwa@gmail.com>
+Date: Wed, 1 Jul 2026 15:01:36 +0530
+Subject: [PATCH 02/10] auth_cram: fix out-of-bounds read of cram-md5 challenge
+
+(cherry picked from commit 6c31d8a512ba529b3a6f6f0836a2039e58ff2d0b)
+---
+ imap/auth_cram.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/imap/auth_cram.c b/imap/auth_cram.c
+index 532f937..c849312 100644
+--- a/imap/auth_cram.c
++++ b/imap/auth_cram.c
+@@ -131,11 +131,14 @@ enum ImapAuthRes imap_auth_cram_md5(struct ImapAccountData *adata, const char *m
+     goto bail;
+   }
+ 
+-  if (mutt_b64_decode(adata->buf + 2, obuf->data, obuf->dsize) == -1)
++  int dlen = mutt_b64_decode(adata->buf + 2, obuf->data, obuf->dsize - 1);
++  if (dlen == -1)
+   {
+     mutt_debug(LL_DEBUG1, "Error decoding base64 response\n");
+     goto bail;
+   }
++  obuf->data[dlen] = '\0';
++  buf_fix_dptr(obuf);
+ 
+   mutt_debug(LL_DEBUG2, "CRAM challenge: %s\n", buf_string(obuf));
+ 

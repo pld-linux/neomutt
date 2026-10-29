@@ -1,0 +1,33 @@
+From 46df3139dbd2411886f6cd120e1221622f39e1e3 Mon Sep 17 00:00:00 2001
+From: jmestwa-coder <jmestwa@gmail.com>
+Date: Tue, 13 Oct 2026 13:07:42 +0530
+Subject: [PATCH 05/10] imap: fix out-of-bounds read in utf8_to_utf7 (#5047)
+
+The decoder accepts the obsolete 5- and 6-byte UTF-8 forms, so ch can
+exceed U+10FFFF. Anything over 0xffff is then encoded as a UTF-16
+surrogate pair, pair1 = 0xd800 + (ch >> 10), which leaves 16 bits and
+makes the unmasked B64Chars[b | pair1 >> k] lookup index past the end of
+the 64-byte table. Bound the code point with the other malformed-input
+rejections.
+
+(cherry picked from commit bab0d41b3c14861a18cca5eeae86a1d31f387bc2)
+---
+ imap/utf7.c | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/imap/utf7.c b/imap/utf7.c
+index 94765ff..51d403a 100644
+--- a/imap/utf7.c
++++ b/imap/utf7.c
+@@ -315,6 +315,11 @@ static char *utf8_to_utf7(const char *u8, size_t u8len, char **u7, size_t *u7len
+     }
+     if ((n > 1) && !(ch >> (n * 5 + 1)))
+       goto bail;
++    if (ch > 0x10ffff)
++    {
++      /* Outside Unicode, so it has no UTF-16 representation */
++      goto bail;
++    }
+     u8 += n;
+     u8len -= n;
+ 

@@ -1,0 +1,47 @@
+From 988af934970554717afb5e76ec6f7d549c13b006 Mon Sep 17 00:00:00 2001
+From: jmestwa-coder <jmestwa@gmail.com>
+Date: Wed, 14 Oct 2026 11:36:18 +0530
+Subject: [PATCH 06/10] nntp: fix out-of-bounds read of truncated overview
+ format (#5044)
+
+(cherry picked from commit fd8572afc9201ed52a7e6ab9895ff6397bdde475)
+---
+ nntp/nntp.c | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
+
+diff --git a/nntp/nntp.c b/nntp/nntp.c
+index 864ef1c..5d0213d 100644
+--- a/nntp/nntp.c
++++ b/nntp/nntp.c
+@@ -76,14 +76,14 @@ struct stat;
+ struct NntpAccountData *CurrentNewsSrv = NULL;
+ 
+ /// Fields to get from server, if it supports the LIST OVERVIEW.FMT feature
+-static const char *OverviewFmt = "Subject:\0"
+-                                 "From:\0"
+-                                 "Date:\0"
+-                                 "Message-ID:\0"
+-                                 "References:\0"
+-                                 "Content-Length:\0"
+-                                 "Lines:\0"
+-                                 "\0";
++static const char OverviewFmt[] = "Subject:\0"
++                                  "From:\0"
++                                  "Date:\0"
++                                  "Message-ID:\0"
++                                  "References:\0"
++                                  "Content-Length:\0"
++                                  "Lines:\0"
++                                  "\0";
+ 
+ /**
+  * struct FetchCtx - Keep track when getting data from a server
+@@ -332,7 +332,7 @@ static int nntp_attempt_features(struct NntpAccountData *adata)
+     }
+     if (!mutt_str_startswith(buf, "215"))
+     {
+-      adata->overview_fmt = mutt_str_dup(OverviewFmt);
++      adata->overview_fmt = mutt_strn_dup(OverviewFmt, sizeof(OverviewFmt));
+     }
+     else
+     {

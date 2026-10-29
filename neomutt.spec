@@ -22,16 +22,25 @@ Summary(tr.UTF-8):	NeoMutt elektronik posta programı
 Summary(uk.UTF-8):	Поштова клієнтська програма NeoMutt
 Name:		neomutt
 Version:	20260616
-Release:	2
+Release:	3
 License:	GPL v2+
 Group:		Applications/Mail
 Source0:	https://github.com/neomutt/neomutt/archive/%{version}.tar.gz
 # Source0-md5:	62598030ad28173f18e8c04ead0c5e68
 Patch0:		flags.patch
+# fixes from upstream main/release branches after 20260616, https://github.com/neomutt/neomutt
+Patch1:		thread-dangling-pointers.patch
+Patch2:		imap-cram-challenge-oob.patch
+Patch3:		imap-cram-md5-key.patch
+Patch4:		imap-status-literal.patch
+Patch5:		imap-utf7-oob.patch
+Patch6:		nntp-overview-fmt-oob.patch
+Patch7:		parse-references-oob.patch
+Patch8:		base64-leading-pad.patch
+Patch9:		date-tm_mon-bound.patch
+Patch10:	expando-justify-overrun.patch
 Source1:	%{name}.desktop
-URL:		http://www.mutt.org/
-BuildRequires:	autoconf >= 2.54
-BuildRequires:	automake >= 1.6
+URL:		https://neomutt.org/
 %{?with_sasl:BuildRequires:	cyrus-sasl-devel >= 2.1.0}
 %{?with_bdb:BuildRequires:	db-devel >= 4.0}
 BuildRequires:	docbook-dtd42-xml
@@ -49,6 +58,7 @@ BuildRequires:	lz4-devel
 BuildRequires:	ncurses-devel >= 5.0
 BuildRequires:	openssl-devel >= 0.9.7d
 %{?with_pcre2:BuildRequires:	pcre2-8-devel}
+BuildRequires:	pkgconfig
 %{?with_qdbm:BuildRequires:	qdbm-devel}
 BuildRequires:	rpm-build >= 4.6
 BuildRequires:	tcl
@@ -149,6 +159,16 @@ Utility to add S/MIME certificate to the database used by neomutt.
 %prep
 %setup -q
 %patch -P0 -p1
+%patch -P1 -p1
+%patch -P2 -p1
+%patch -P3 -p1
+%patch -P4 -p1
+%patch -P5 -p1
+%patch -P6 -p1
+%patch -P7 -p1
+%patch -P8 -p1
+%patch -P9 -p1
+%patch -P10 -p1
 
 %{__sed} -i -e '1 s,#!.*env python3,#!%{__python3},' contrib/oauth2/mutt_oauth2.py
 
@@ -206,6 +226,8 @@ EOF
 
 %{__rm} -r $RPM_BUILD_ROOT%{_datadir}/neomutt/account-command/macos-keychain
 %{__rm} -r $RPM_BUILD_ROOT%{_datadir}/neomutt/logo
+# shipped as %doc of the subpackages
+%{__rm} $RPM_BUILD_ROOT%{_datadir}/neomutt/{account-command/gpg-json,oauth2}/README.md
 
 # keep manual.txt.gz, the rest is installed as %doc
 %{__rm} -r $RPM_BUILD_ROOT%{_docdir}/%{name}/[!m]*
@@ -229,10 +251,12 @@ rm -rf $RPM_BUILD_ROOT
 
 %dir %{_datadir}/neomutt
 %dir %{_datadir}/neomutt/account-command
+%{_datadir}/neomutt/account-command/README.md
 %dir %{_datadir}/neomutt/colorschemes
 %{_datadir}/neomutt/colorschemes/*.neomuttrc
 %{_datadir}/neomutt/mime.types
 %dir %{_datadir}/neomutt/vim-keys
+%{_datadir}/neomutt/vim-keys/README.md
 %{_datadir}/neomutt/vim-keys/vim-keys.rc
 %{_docdir}/%{name}
 %{_desktopdir}/neomutt.desktop
